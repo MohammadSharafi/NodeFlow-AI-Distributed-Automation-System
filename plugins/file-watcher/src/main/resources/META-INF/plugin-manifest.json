@@ -1,0 +1,14 @@
+{
+  "id": "file-watcher",
+  "name": "File Watcher",
+  "version": "1.0.0",
+  "description": "Watches for file changes in a directory",
+  "type": "TRIGGER",
+  "requiredCapabilities": [],
+  "permissions": ["FILE_READ"],
+  "requiresGPU": false,
+  "minMemoryMB": 128,
+  "author": "SynapseGrid",
+  "license": "MIT"
+}
+
