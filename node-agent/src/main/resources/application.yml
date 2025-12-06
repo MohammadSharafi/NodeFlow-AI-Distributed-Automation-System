@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: synapsegrid-node-agent
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: node-agent-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+node:
+  id: ${NODE_ID:node-${random.value}}
+  hostname: ${HOSTNAME:localhost}
+  port: ${NODE_PORT:9091}
+  plugin-directory: ${PLUGIN_DIR:./plugins}
+
+grpc:
+  server:
+    port: 9091
+
+logging:
+  level:
+    com.synapsegrid: DEBUG
+
