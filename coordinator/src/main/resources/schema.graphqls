@@ -1,0 +1,140 @@
+type Node {
+  id: ID!
+  hostname: String!
+  status: NodeStatus!
+  capabilities: NodeCapabilities!
+  lastHeartbeat: String!
+}
+
+type NodeCapabilities {
+  cpuCores: Int!
+  memoryMB: Long!
+  hasGPU: Boolean!
+  gpuModel: String
+  installedPlugins: [String!]!
+  aiCapabilities: [String!]!
+  diskSpaceMB: Long!
+  currentLoad: Float!
+}
+
+type Workflow {
+  id: ID!
+  name: String!
+  description: String
+  status: WorkflowStatus!
+  tasks: [WorkflowTask!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type WorkflowTask {
+  id: ID!
+  workflowId: ID!
+  pluginId: String!
+  type: TaskType!
+  parameters: JSON!
+  dependencies: [String!]!
+  status: TaskStatus!
+  assignedNodeId: ID
+}
+
+type Plugin {
+  id: ID!
+  name: String!
+  version: String!
+  type: PluginType!
+  description: String
+  permissions: [PluginPermission!]!
+}
+
+enum NodeStatus {
+  ONLINE
+  OFFLINE
+  DEGRADED
+  MAINTENANCE
+}
+
+enum WorkflowStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  FAILED
+}
+
+enum TaskType {
+  TRIGGER
+  ACTION
+  AI_PROCESSOR
+  CONDITION
+  TRANSFORMATION
+}
+
+enum TaskStatus {
+  PENDING
+  ASSIGNED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PluginType {
+  TRIGGER
+  ACTION
+  AI_PROCESSOR
+  CONDITION
+  TRANSFORMATION
+}
+
+enum PluginPermission {
+  FILE_READ
+  FILE_WRITE
+  NETWORK_ACCESS
+  CAMERA_ACCESS
+  MICROPHONE_ACCESS
+  AI_COMPUTE
+  DATABASE_ACCESS
+}
+
+scalar JSON
+scalar Long
+
+type Query {
+  nodes: [Node!]!
+  node(id: ID!): Node
+  workflows: [Workflow!]!
+  workflow(id: ID!): Workflow
+  plugins: [Plugin!]!
+  plugin(id: ID!): Plugin
+}
+
+type Mutation {
+  createWorkflow(input: WorkflowInput!): Workflow!
+  updateWorkflow(id: ID!, input: WorkflowInput!): Workflow!
+  deployWorkflow(id: ID!): Workflow!
+  pauseWorkflow(id: ID!): Workflow!
+  deleteWorkflow(id: ID!): Boolean!
+  installPlugin(pluginJar: Upload!): Plugin!
+  uninstallPlugin(id: ID!): Boolean!
+}
+
+input WorkflowInput {
+  name: String!
+  description: String
+  tasks: [WorkflowTaskInput!]!
+}
+
+input WorkflowTaskInput {
+  pluginId: String!
+  type: TaskType!
+  parameters: JSON!
+  dependencies: [String!]!
+}
+
+type Subscription {
+  nodeStatusChanged: Node!
+  workflowStatusChanged: Workflow!
+  taskStatusChanged: WorkflowTask!
+}
+
